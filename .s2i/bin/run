@@ -1,0 +1,23 @@
+#!/bin/bash -e
+#
+# S2I run script for the 'rails4-centos7' image.
+# The run script executes the server that runs your application.
+#
+# For more information see the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+export PATH=/opt/ruby/bin:$PATH
+
+
+export RAILS_ENV=${RAILS_ENV:-"production"}
+
+if [[ "$RAILS_ENV" == "development" ]]; then
+  RAILS_ENV=development rake db:migrate
+else
+  RAILS_ENV=production rake db:migrate
+fi
+
+chown -R apache.apache .
+
+exec /usr/sbin/httpd -DFOREGROUND

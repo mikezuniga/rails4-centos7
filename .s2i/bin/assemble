@@ -1,0 +1,39 @@
+#!/bin/bash -e
+#
+# S2I assemble script for the 'rails4-centos7' image.
+# The 'assemble' script builds your application source ready to run.
+#
+# For more information refer to the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+if [ "$1" = "-h" ]; then
+	# If the 'rails4-centos7' assemble script is executed with '-h' flag,
+	# print the usage.
+	exec /usr/local/s2i/usage
+fi
+
+export PATH=/opt/ruby/bin:$PATH
+
+echo "---> Installing application source"
+cp -Rf /tmp/src/. ./
+
+chown -R apache.apache .
+echo "---> Building application from source"
+
+export RAILS_ENV=${RAILS_ENV:-"production"}
+
+if [[ "$RAILS_ENV" == "development" ]]; then
+  bundle install 
+elif [[ "$RAILS_ENV" == "production" ]]; then
+  bundle install
+  RAILS_ENV=production bundle exec rake assets:precompile
+else
+  bundle install 
+fi
+
+set +e
+[[ -d ./tmp ]] && chmod -R 774 ./tmp
+[[ -d ./db ]] && chmod -R 774 ./db
+set -e
+
