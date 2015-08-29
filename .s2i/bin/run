@@ -9,8 +9,8 @@
 
 export PATH=/opt/ruby/bin:$PATH
 
-
 export RAILS_ENV=${RAILS_ENV:-"production"}
+cd /opt/app-root/src/
 
 if [[ "$RAILS_ENV" == "development" ]]; then
   RAILS_ENV=development rake db:migrate
@@ -18,6 +18,6 @@ else
   RAILS_ENV=production rake db:migrate
 fi
 
-chown -R apache.apache .
+chown -R apache.apache /opt/app-root/
 
 exec /usr/sbin/httpd -DFOREGROUND

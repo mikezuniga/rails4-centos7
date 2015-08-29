@@ -1,6 +1,7 @@
 
 # rails4-centos7
-FROM openshift/base-centos7
+#FROM openshift/base-centos7
+FROM centos:centos7
 
 # TODO: Put the maintainer name in the image metadata
 MAINTAINER Miguel Z <miguelzuniga@gmail.com>
@@ -16,7 +17,7 @@ LABEL io.k8s.description="Platform for serving rails 4 applications running on p
 
 # TODO: Install required packages here:
 
-RUN yum install -y wget readline readline-devel libcurl-devel gcc gcc-c++ libxml2 libxml2-devel libxslt libxslt-devel libxml libssl openssl-devel libssl-devel openssl libyaml httpd-devel httpd \
+RUN yum install -y sqlite-devel sqlite patch wget readline readline-devel libcurl-devel gcc gcc-c++ libxml2 libxml2-devel libxslt libxslt-devel libxml libssl openssl-devel libssl-devel openssl libyaml httpd-devel httpd \
 	&& wget https://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.7.tar.gz -O /tmp/ruby-2.1.7.tar.gz \
         && cd /opt \
         && tar xvfz /tmp/ruby-2.1.7.tar.gz \
@@ -29,6 +30,7 @@ RUN yum install -y wget readline readline-devel libcurl-devel gcc gcc-c++ libxml
         && passenger-install-apache2-module --languages 'ruby' --snippet > /etc/httpd/conf.d/passenger.conf \
         && rm -rf /tmp/ruby-* \
         && rm -rf /opt/ruby-2.1.7* \
+        && mkdir -p /opt/app-root/src \
         && yum clean all -y
 
 
@@ -44,9 +46,10 @@ COPY ./etc/rails.conf /etc/httpd/conf.d/
 
 # TODO: Drop the root user and make the content of /opt/app-root owned by user 1001
 RUN chown -R apache.apache /opt/app-root
+RUN chmod -R 777 /opt/app-root
 
 # This default user is created in the openshift/base-centos7 image
-#USER apache
+USER root
 
 # TODO: Set the default port for applications built using this image
 EXPOSE 8080
