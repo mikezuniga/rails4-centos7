@@ -18,10 +18,10 @@ LABEL io.k8s.description="Platform for serving rails 4 applications running on p
 # TODO: Install required packages here:
 
 RUN yum install -y sqlite-devel sqlite patch wget readline readline-devel libcurl-devel gcc gcc-c++ libxml2 libxml2-devel libxslt libxslt-devel libxml libssl openssl-devel libssl-devel openssl libyaml httpd-devel httpd \
-	&& wget https://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.7.tar.gz -O /tmp/ruby-2.1.7.tar.gz \
+	&& https://cache.ruby-lang.org/pub/ruby/2.2/ruby-2.2.3.tar.gz -O /tmp/ruby-2.2.3.tar.gz \
         && cd /opt \
-        && tar xvfz /tmp/ruby-2.1.7.tar.gz \
-        && cd ruby-2.1.7 \
+        && tar xvfz /tmp/ruby-2.2.3.tar.gz \
+        && cd ruby-2.2.3 \
         && ./configure --prefix=/opt/ruby && make && make install \
         && export PATH=/opt/ruby/bin:$PATH \
         && gem install rails --no-ri --no-rdoc \
@@ -29,7 +29,7 @@ RUN yum install -y sqlite-devel sqlite patch wget readline readline-devel libcur
         && passenger-install-apache2-module -a --languages 'ruby' \
         && passenger-install-apache2-module --languages 'ruby' --snippet > /etc/httpd/conf.d/passenger.conf \
         && rm -rf /tmp/ruby-* \
-        && rm -rf /opt/ruby-2.1.7* \
+        && rm -rf /opt/ruby-2.2.3* \
         && mkdir -p /opt/app-root/src \
         && yum clean all -y
 
