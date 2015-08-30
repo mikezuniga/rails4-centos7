@@ -18,7 +18,7 @@ LABEL io.k8s.description="Platform for serving rails 4 applications running on p
 # TODO: Install required packages here:
 
 RUN yum install -y sqlite-devel sqlite patch wget readline readline-devel libcurl-devel gcc gcc-c++ libxml2 libxml2-devel libxslt libxslt-devel libxml libssl openssl-devel libssl-devel openssl libyaml httpd-devel httpd \
-	&& https://cache.ruby-lang.org/pub/ruby/2.2/ruby-2.2.3.tar.gz -O /tmp/ruby-2.2.3.tar.gz \
+	&& wget https://cache.ruby-lang.org/pub/ruby/2.2/ruby-2.2.3.tar.gz -O /tmp/ruby-2.2.3.tar.gz \
         && cd /opt \
         && tar xvfz /tmp/ruby-2.2.3.tar.gz \
         && cd ruby-2.2.3 \
